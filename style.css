@@ -193,3 +193,9 @@ a[data-temperature="wake"],
 .slider span.ui-slider-tooltip {
   width: auto;
 }
+
+.ranges-table {
+  border: thin;
+  border-radius: 2;
+  border-style: solid;
+}

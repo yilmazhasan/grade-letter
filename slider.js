@@ -529,7 +529,8 @@
 
         // mouse stop drag handler
         _mouseStop: function(event) {
-
+            if(window.refreshRangesTable)
+                window.refreshRangesTable();   // global from external source, in script.js
             //this.handles.removeClass('ui-state-active');
             this._stop(event, this._handleIndex);
             this._change(event, this._handleIndex);

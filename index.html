@@ -2,18 +2,24 @@
 <html>
 
 <head>
-  <script data-require="jquery@*" data-semver="2.1.1" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
+  <!-- <script data-require="jquery@*" data-semver="2.1.1" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
   <link data-require="bootstrap@*" data-semver="3.2.0" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" />
   <script data-require="bootstrap@*" data-semver="3.2.0" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.js"></script>
-  <script data-require="jqueryui@*" data-semver="1.10.0" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script>
+  <script data-require="jqueryui@*" data-semver="1.10.0" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script> -->
+  <script data-require="jquery@*" data-semver="2.1.1" src="lib/jquery.min.js"></script>
+  <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="lib/jquery-ui-1.10.0.custom.min.css" />
+  <link data-require="bootstrap@*" data-semver="3.2.0" rel="stylesheet" href="lib/bootstrap.css" />
+  <script data-require="bootstrap@*" data-semver="3.2.0" src="lib/bootstrap.js"></script>
+  <script data-require="jqueryui@*" data-semver="1.10.0" src="lib/jquery-ui.js"></script>
   <link rel="stylesheet" href="style.css" />
+  <script src="data.js"></script>
   <script src="slider.js"></script>
   <script src="script.js"></script>
 </head>
 
 <body>
-  <h1>Slider demo</h1>
+  <h1>Grader</h1>
   <div class="col-xs-12">
     <div class="col-xs-12">
       <div class="slider sleep" id="slider"></div>
@@ -21,15 +27,28 @@
     <div class="col-xs-12">
       <div class="slider-controller">
       <form role="form" class="form form-inline">
-        <select class="form-control">
+        <!-- <select class="form-control">
           <option value="wake">Wake Up</option>
           <option value="leave">Leave</option>
           <option value="return">Return</option>
           <option value="sleep">Sleep</option>
-        </select>
+        </select> -->
+        <input id="newRangeName" placeholder="name" type="text" />
+        <input id="newRangeValue" placeholder="start value" type="number" />
         <button class="btn btn-success add">Add Range</button>
         <button class="btn btn-warning remove">Remove Range</button>
-        </form>
+      </form>
+      <table id="currentRanges" class="table table-stripped col-md-6">
+        <thead>  
+          <tr> <th> Name </th> <th> Value [From-To] </th> <th> Count </th> </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+      <textarea id="input" placeholder="Each with a new line (enter)" onchange="input_changed()" name="Text1" cols="10" rows="30"></textarea>
+      <button class="btn btn-success" onclick="calculate_output()">Calculate</button>
+      <textarea id="output" placeholder="Result" name="Text1" cols="20" rows="30"></textarea>
+      
       </div>
     </div>
   </div>
