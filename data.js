@@ -41,26 +41,6 @@ let handles = [{
   }
 ];
 
+window.typeNames = typeNames;
+window.handles = handles;
 
-
-  // let typeNames = {
-//     'aa': 'Wake Up',
-//     'leave': 'Leave',
-//     'return': 'Return',
-//     'sleep': 'Sleep',
-//     'custom': 'Custom'
-//   }
-
-// let handles = [{
-//     value: 7,
-//     type: "wake"
-//   }, {
-//     value: 10,
-//     type: "leave"
-//   }, {
-//     value: 15,
-//     type: "return"
-//   }, {
-//     value: 22,
-//     type: "sleep"
-//   }];

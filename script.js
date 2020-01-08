@@ -31,7 +31,7 @@ $(function() {
     }
   };
 
- function refreshSlider(typeNames, handles) {
+  function refreshSlider(typeNames, handles) {
   // create slider  
   $('#slider').slider({
     // set min and maximum values
@@ -89,7 +89,7 @@ $(function() {
       let from = handles[i].value;
       let to = handles[i+1] ? handles[i+1].value : '100'; // if undefined then it's last element
       td_val.textContent = `[${from}-${to}] : ${(to-from)}%`;
-      td_count.textContent = categoryFreq[handles[i].type.toUpperCase()] || 0;
+      td_count.textContent = window.categoryFreq[handles[i].type.toUpperCase()] || 0;
       tr.appendChild(td_name);
       tr.appendChild(td_val);
       tr.appendChild(td_count);
@@ -98,11 +98,13 @@ $(function() {
 
   }
 
-  window.refreshRangesTable = refreshRangesTable;
   refreshRangesTable();
 
   // Initialize
   refreshSlider(typeNames, handles)
+
+  window.refreshRangesTable = refreshRangesTable;
+  window.refreshSlider = refreshSlider;
 
   // button for adding new ranges                        
   $('.slider-controller button.add').click(function(e) {
@@ -114,9 +116,9 @@ $(function() {
       let name = $('#newRangeName').val();
       let val =Number($('#newRangeValue').val());
       handles.push({value: val, type: name});
-      debugger
-      refreshSlider(typeNames, handles) // gloabal variables in declared data.js
-      refreshRangesTable() 
+
+      window.refresh();
+
       // $slider.slider('addHandle', {
       //   value: 12,
       //   type: 'custom' //$('#newRange').val()
@@ -133,6 +135,8 @@ $(function() {
       // trigger removeHandle event on active handle
       $slider.slider('removeHandle', $slider.find('a.ui-state-active').attr('data-id'));
 
+      window.refresh();
+
       return false;
     });
 
@@ -142,16 +146,13 @@ $(function() {
     // enable if disabled
     //select.attr('disabled', false);
     alert($(this).attr('data-type'));
-    debugger
+
     select.val($(this).attr('data-type'));
     /*if ($(this).parent().find('a.ui-state-active').length)
       $(this).toggleClass('ui-state-active');*/
   });
-
   
 });
-
-let output;
 
 function resizeTextAreas({rowCount}) {
   rowCount = rowCount < 5 ? 5 : rowCount;
@@ -165,6 +166,7 @@ function input_changed() {
   resizeTextAreas({rowCount: inputArray.length+3});
 
   let numbers = inputArray.map(x => Number(x))
+  window.numbers = numbers;
   let errors = [];
   let num = 0;
 
@@ -180,22 +182,48 @@ function input_changed() {
     return;
   }
 
-  let categoryDict = getCategories(numbers.slice());
+  window.categoryDictGradeByNum = getCategories(numbers.slice());
 
   let categoriesOrderedAsEntered = [];
   
   for(let i = 0; i < numbers.length; i++) {
-    categoriesOrderedAsEntered.push(categoryDict[numbers[i]]);
+    categoriesOrderedAsEntered.push(window.categoryDictGradeByNum[numbers[i]]);
   }
   
   console.log(numbers)
   
   writeToOutput(categoriesOrderedAsEntered);
+  writeToOutputOrdered(categoriesOrderedAsEntered);
+  window.refreshChart();
 }
 
-let categoryFreq = {};
+// if there are no type starting from zero, then add a NA grade that starts from zero
+function checkHandlesLowBorder() {
+  let lowBorder = false;
+  let highBorder = false;
+
+  window.handlesWithZero = handles.slice()  // different because we do not want to show zero on slider
+
+  for(handle of handles) {
+    if(handle.value == 0) {
+      lowBorder = true;
+    }
+  }
+
+  if(!lowBorder) {
+    window.handlesWithZero.push({value: 0, type: "NA"})
+    console.log("low border added as NA");
+  }
+
+  window.handlesWithZero.sort((x,y) => x.value > y.value ? 1 : -1)
+}
+
+window.categoryFreq = {};
 
 function getCategories(numbers) {
+
+  checkHandlesLowBorder()
+
   numbers.sort((x,y) => x > y ? 1 : -1);
 
   let totalCount = numbers.length;
@@ -204,17 +232,11 @@ function getCategories(numbers) {
 
   // let descendingSortedHandles = handles.slice().sort((x,y) => x.value > y.value ? -1 : 1)
 
-  for(let i = 0; i < handles.length; i++) {
-    categoryCounts.push({ category: handles[i].type, 
-      count: Math.round(totalCount * (handles[i].value - (i==0 ? 0 : handles[i-1].value)) / 100.0)});
+  for(let i = 0; i < window.handlesWithZero.length; i++) {
+    categoryCounts.push({ category: window.handlesWithZero[i].type, 
+      count: Math.round(totalCount * ((window.handlesWithZero[i+1]?.value || 100) - window.handlesWithZero[i].value) / 100.0)});
   }
   
-  let cursor = 0;
-
-  
-  // while(counts.reduce((x,y) => x+y) > totalCount) {
-    //   counts[cursor++]--;
-    // }
   let numOfUncategorizeds = totalCount - categoryCounts.reduce((sum,el) => sum + el.count, 0);
 
   fineTune(categoryCounts, numbers, numOfUncategorizeds)
@@ -231,36 +253,43 @@ function getCategories(numbers) {
       continue;
     }
 
-    if(!handles[categoryCursor]) {
+    if(!window.handlesWithZero[categoryCursor]) {
       numOfUncategorizeds = totalCount - i;
       break;
     }
 
-    categorizeds.push({number: numbers[i], category: handles[categoryCursor].type.toUpperCase()});
+    categorizeds.push({number: numbers[i], category: window.handlesWithZero[categoryCursor].type.toUpperCase()});
 
     numOfCategorized++;
   }
 
   console.log(categorizeds);
 
-  categoryDict = {};
+  window.categoryDictGradeByNum = {};
 
-  for(key in categoryFreq) {
-    categoryFreq[key] = 0;
+  for(key in window.categoryFreq) {
+    window.categoryFreq[key] = 0;
   }
 
   categorizeds.forEach(el => {
-    if(!categoryDict[el.number]) {
-      categoryDict[el.number] = el.category;
+    if(!window.categoryDictGradeByNum[el.number]) {
+      window.categoryDictGradeByNum[el.number] = el.category;
     }
-    categoryFreq[el.category] = (categoryFreq[el.category] || 0) + 1;
+    window.categoryFreq[el.category] = (window.categoryFreq[el.category] || 0) + 1;
   })
 
   refreshRangesTable();
 
-  return categoryDict;
+  return window.categoryDictGradeByNum;
 }
 
+window.refresh = () => {
+  window.refreshSlider(typeNames, handles) // gloabal variables in declared data.js
+  window.refreshRangesTable();
+  window.refreshChart();
+  input_changed();
+
+}
 
 
 function fineTune(categoryCounts, numbers, numOfUncategorizeds) {
@@ -269,6 +298,23 @@ function fineTune(categoryCounts, numbers, numOfUncategorizeds) {
     fineTuneIfUncategorizedExists(categoryCounts, numbers, numOfUncategorizeds);
     return; // since function above will call this function recursively again
   }
+
+  // if categorizeds are more than required, then just decrement starting from lowest grade
+  if(numOfUncategorizeds < 0) {
+    let cursor = 0; 
+    while(numOfUncategorizeds < 0) {
+      if(categoryCounts[cursor] && categoryCounts[cursor++].count) { 
+        categoryCounts[cursor].count--;
+        numOfUncategorizeds++;
+      }
+      cursor = (cursor + 1) % categoryCounts.length;
+    }
+
+    // fineTune(categoryCounts, numbers, numOfUncategorizeds);
+    // return; // since function above will call this function recursively again
+  }
+
+
 
   // if there are no uncategorizeds, then look for if there are any same number with different category
   // if yes increment to upper and re-finetune
@@ -284,6 +330,10 @@ function fineTuneIfSameNumWithDifferentCategory(categoryCounts, numbers, numOfUn
   let cursor = numbers.length-1;  // start from last
   for(let i = categoryCounts.length-1; i >= 0; i--) {
     cursor -= categoryCounts[i].count;
+    if(cursor < 0) {
+      return;
+    }
+ 
     if(numbers[cursor] == numbers[cursor+1]) {  // here is the diff point, below is low up is high category but same nums
       let prevIndex = i-1;
       while(categoryCounts[prevIndex] && !categoryCounts[prevIndex].count) {
@@ -352,6 +402,21 @@ function fineTuneIfUncategorizedExists(categoryCounts, numbers, numOfUncategoriz
 function writeToOutput(outputArray) {
   $('#output').val(outputArray.join("\n"));
 }
+
+function writeToOutputOrdered(numbers, grades) {
+
+  let orderedNumbers = window.numbers.slice().sort((x,y) => x > y ? -1 : 1)
+
+  let output = "";
+
+  orderedNumbers.forEach((num) => {
+    output += (num + "\t" + window.categoryDictGradeByNum[num] + "\n");
+  })
+
+  $('#output_ordered').val(output);
+}
+
+
 
 
 

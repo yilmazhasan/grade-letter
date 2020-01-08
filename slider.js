@@ -198,6 +198,7 @@
             this._refreshHandles();
             // refresh values
             this._refreshValue();
+            window.refresh();
         },
         // refresh handles
         _refreshHandles: function() {
@@ -410,6 +411,7 @@
             this._refreshHandles();
             // refresh values
             this._refreshValue();
+            window.refresh();
         },
 
         destroy: function() {
@@ -529,8 +531,8 @@
 
         // mouse stop drag handler
         _mouseStop: function(event) {
-            if(window.refreshRangesTable)
-                window.refreshRangesTable();   // global from external source, in script.js
+            if(window.refresh)
+                window.refresh();   // global from external source, in script.js
             //this.handles.removeClass('ui-state-active');
             this._stop(event, this._handleIndex);
             this._change(event, this._handleIndex);

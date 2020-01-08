@@ -1,3 +1,6 @@
+# live
+https://yilmazhasan.github.io/grader
+
 index.html
 ---------------
 the web page
@@ -15,5 +18,6 @@ style.css
 styles
 
 
-#REF
+# REF
+Slider is taken from:
 http://embed.plnkr.co/XJyMrxVgFixCKkUnwUTA/preview
