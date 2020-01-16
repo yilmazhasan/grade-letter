@@ -1,0 +1,35 @@
+{
+  "name": "grade-letter",
+  "version": "1.0.0",
+  "description": "calculate letters from grades",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "minify": "npx webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yilmazhasan/grade-letter.git"
+  },
+  "keywords": [
+    "grade",
+    "letter"
+  ],
+  "author": "github.com/yilmazhasan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yilmazhasan/grade-letter/issues"
+  },
+  "homepage": "https://github.com/yilmazhasan/grade-letter#readme",
+  "devDependencies": {
+    "install": "^0.13.0",
+    "npm": "^6.13.6",
+    "terser-webpack-plugin": "^2.3.2",
+    "uglifyjs-webpack-plugin": "^1.0.0-rc.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}

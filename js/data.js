@@ -1,3 +1,5 @@
+app = window.app;
+
 let typeNames = {
     'aa': 'AA',
     'ba': 'BA',
@@ -9,7 +11,7 @@ let typeNames = {
     'fd': 'FD',
     'ff': 'FF',
     'na': 'NA',
-  }
+  };
 
 let handles = [{
     value: 2,
@@ -44,7 +46,7 @@ let handles = [{
 app.typeNames = typeNames;
 app.handles = handles;
 
-app.letterSet = app.handles.map(x=> x.type.toUpperCase())
+app.letterSet = app.handles.map(x=> x.type.toUpperCase());
 
 
 app.sampleGrades = [12, 25, 66, 98, 2, 15, 65, 85, 12, 23, 36, 65, 78, 44, 45, 48, 79, 43, 99];

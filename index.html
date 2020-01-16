@@ -16,23 +16,35 @@
   <script data-require="jqueryui@*" data-semver="1.10.0" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script> 
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> 
 -->
-  <script data-require="jquery@*" data-semver="2.1.1" src="lib/jquery.min.js"></script>
-  <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="lib/jquery-ui-1.10.0.custom.min.css" />
-  <link data-require="bootstrap@*" data-semver="3.2.0" rel="stylesheet" href="lib/bootstrap.css" />
-  <script data-require="bootstrap@*" data-semver="3.2.0" src="lib/bootstrap.js"></script>
-  <script data-require="jqueryui@*" data-semver="1.10.0" src="lib/jquery-ui.js"></script>
-  <script data-semver="1.10.0" src="lib/canvasjs.min.js"></script>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="app-style.css" />
-  <script src="init.js"></script>
-  <script src="utils.js"></script>
-  <script src="data.js"></script>
-  <script src="slider.js"></script>
-  <script src="script.js"></script>
-  <script src="chart.js"></script>
+  <script data-require="jquery@*" data-semver="2.1.1" src="local_lib/jquery.min.js"></script>
+  <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="local_lib/jquery-ui-1.10.0.custom.min.css" />
+  <link data-require="bootstrap@*" data-semver="3.2.0" rel="stylesheet" href="local_lib/bootstrap.css" />
+  <script data-require="bootstrap@*" data-semver="3.2.0" src="local_lib/bootstrap.js"></script>
+  <script data-require="jqueryui@*" data-semver="1.10.0" src="local_lib/jquery-ui.js"></script>
+  <script data-semver="1.10.0" src="local_lib/canvasjs.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/app-style.css" />
+  <script src="js/init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/slider.js"></script>
+  <script src="js/slider_script.js"></script>
+  <script src="js/chart.js"></script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-156448033-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-156448033-1');
+  </script> -->
+
 </head>
 
-<body>
+<body style="max-width: 99%;">
   <h1>Grade Letter</h1>
   <div class="row">
     <div class="col-xs-12">
@@ -42,24 +54,26 @@
       <div class="col-xs-12">
         <div class="slider-controller">
           <form role="form" class="form form-inline">
-            <input id="newRangeName" placeholder="name" type="text" />
-            <input id="newRangeValue" placeholder="start value" type="number" min="0" />
+            <input id="newRangeName" class="form-control" placeholder="name" type="text" />
+            <input id="newRangeValue" class="form-control" placeholder="start value" type="number" min="0" />
             <button class="btn btn-success add">Add Range</button>
             <button class="btn btn-warning remove">Remove Range</button>
-            <input id="ignoreRange" placeholder="start value" type="number" min="0" />
-            <button type="button" class="btn btn-warning" onclick="equilizeLetters()">Equilize Letters</button>
-            <button type="button" class="btn btn-success" onclick="input_changed()">Re-calculate</button>
-  
+            <input id="ignoreRange" class="form-control" data-toggle="tooltip" data-placement="top" title="Ignore range and make very near letters same" placeholder="Ignore range" type="number" min="0" />
+            <button type="button" class="btn btn-warning" onclick="window.app.equalizeLetters()">Equalize Letters</button>
+            <button type="button" class="btn btn-success" onclick="window.app.input_changed()">Re-calculate</button>
+            <span class="label label-default" id="medianLabel" style="display: none;">Grade median and letter:</span>
+            <span class="label label-info" id="median" style="display: none;"> </span>
+            <span class="label label-info" id="medianLetter" style="display: none;"> </span>
           </form>
   
           <div class="row" style="margin-top: 5px;">
             <div class="col-md-4">
               <textarea class="col-md-3" id="input" placeholder="A whitespace between each grade"
-                onchange="input_changed()" name="Text1" cols="10" rows="25"></textarea>
-              <textarea class="col-md-4" id="output" onchange="output_changed(event)"
+                onchange="window.app.input_changed()" name="Text1" cols="10" rows="25"></textarea>
+              <textarea class="col-md-4" id="output" onchange="window.app.output_changed(event)"
                 placeholder="Result as entered order" name="Text1" cols="10" rows="25"></textarea>
               <textarea class="col-md-5" id="output_ordered"
-                onchange="output_ordered_changed(event)" placeholder="Result ordered descending" name="Text1" cols="20" rows="25"></textarea>
+                onchange="window.app.output_ordered_changed(event)" placeholder="Result ordered descending" name="Text1" cols="20" rows="25"></textarea>
             </div>
   
             <div class="col-md-4">
@@ -89,12 +103,17 @@
 <div class="footer">
     
   <div class="row">
-    <span class="footerElement col-md-offset-2 label label-default"  onclick="showHelp()">Click for help</span>
-    <span class="footerElement col-md-offset-4 label label-default">Your feedbacks are very important</span>
-    <span class="footerElement col-md-offset-6 label label-default">Open to contribution</span>
-    <span class="footerElement col-md-offset-8 label label-default" onclick="showSampleGrades()" >Click for Sample Grades</span>
-    <span class="footerElement col-md-offset-10 label label-default">
-      <a class="mailTo" href="mailto:yilmazhasan111@gmail.com?subject=Grade letter"> Click here to send an email!</a>
+    <span class="footerElement clickable label label-default"  onclick="window.app.showHelp()">Click for help</span>
+    <span class="footerElement label label-default col-md-offset-1 col-md-2"> Refs: 
+      JS, Jquery, Bootstrap, 
+      <a class="href" href="http://embed.plnkr.co/XJyMrxVgFixCKkUnwUTA/preview"> Slider, </a>
+      <a class="href" href="https://www.chartjs.org"> ChartJs </a> 
+    </span>
+    <span class="footerElement col-md-offset-4 label label-default">Your feedbacks are important</span>
+    <span class="footerElement col-md-offset-6 label label-default">Welcome for contributions</span>
+    <span class="footerElement clickable col-md-offset-8 label label-default" onclick="window.app.showSampleGrades()" >Click for Sample Grades</span>
+    <span class="footerElement clickable col-md-offset-10 label label-default">
+      <a class="href" href="mailto:yilmazhasan111@gmail.com?subject=Grade letter feedback"> Click here to send an email!</a>
     </span>
 </div>
 

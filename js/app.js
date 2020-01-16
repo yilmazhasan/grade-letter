@@ -1,8 +1,10 @@
 /**
- * @author Hasan Yilmaz <github.com/yilmazhasan> <github.com/yilmazhasan>
+ * @author Hasan Yilmaz <github.com/yilmazhasan>
  */
 
- app.refreshSlider = function refreshSlider(typeNames, handles) {
+app = window.app;
+
+app.refreshSlider = function refreshSlider(typeNames, handles) {
   // create slider  
   $('#slider').slider({
     // set min and maximum values
@@ -50,116 +52,30 @@ app.refreshRangesTable = function refreshRangesTable() {
   let rangesTableBody = $('#currentRanges')[0].children[1]; // 0 is thead, 1 is tbody
 
   while (rangesTableBody.childElementCount) {
-    rangesTableBody.deleteRow(0)  // first child is thead
+    rangesTableBody.deleteRow(0);  // first child is thead
   }
 
   // rangesTableBody.empty();
 
-  handles.sort((x, y) => x.value < y.value);
+  app.handles.sort((x, y) => x.value < y.value);
 
-  for (let i = 0; i < handles.length; i++) {
+  for (let i = 0; i < app.handles.length; i++) {
     let tr = document.createElement("tr");
     let td_name = document.createElement("td");
     let td_val = document.createElement("td");
     let td_count = document.createElement("td");
-    td_name.textContent = handles[i].type;
-    let from = handles[i].value;
-    let to = handles[i + 1] ? handles[i + 1].value : '100'; // if undefined then it's last element
+    td_name.textContent = app.handles[i].type;
+    let from = app.handles[i].value;
+    let to = app.handles[i + 1] ? app.handles[i + 1].value : '100'; // if undefined then it's last element
     td_val.textContent = `[${from}-${to}] : ${(to - from)}%`;
-    td_count.textContent = app.categoryFreq[handles[i].type.toUpperCase()] || 0;
+    td_count.textContent = app.categoryFreq[app.handles[i].type.toUpperCase()] || 0;
     tr.appendChild(td_name);
     tr.appendChild(td_val);
     tr.appendChild(td_count);
-    rangesTableBody.append(tr) // .appendChild(tr);
+    rangesTableBody.append(tr); // .appendChild(tr);
   }
 
 }
-
-$(function () {
-
-  // function to create slider ticks
-  var setSliderTicks = function () {
-    // slider element
-    var $slider = $('.slider');
-    var max = $slider.slider("option", "max");
-    var min = $slider.slider("option", "min");
-    var step = $slider.slider("option", "step");
-    var spacing = 100 / (max - min);
-    // tick element
-    var ticks = $slider.find('div.ticks');
-
-    // remove all ticks if they exist
-    $slider.find('.ui-slider-tick-mark-main').remove();
-    $slider.find('.ui-slider-tick-mark-text').remove();
-    $slider.find('.ui-slider-tick-mark-side').remove();
-
-    // generate ticks          
-    for (var i = min; i <= max; i = i + step) {
-
-      // main ticks (whole number)
-      if (i % 1 === 0) {
-        $('<span class="ui-slider-tick-mark-main"></span>').css('left', (spacing * i) + '%').appendTo(ticks);
-        $('<span class="ui-slider-tick-mark-text">' + i + '</span>').css('left', (spacing * i) + '%').appendTo(ticks);
-      }
-      // side ticks
-      else {
-        $('<span class="ui-slider-tick-mark-side"></span>').css('left', (spacing * i) + '%').appendTo(ticks);
-      }
-    }
-  };
-
-  app.refreshRangesTable();
-
-  // Initialize
-  app.refreshSlider(typeNames, handles)
-
-  // button for adding new ranges                        
-  $('.slider-controller button.add').click(function (e) {
-    e.preventDefault();
-    // get slider
-    var $slider = $('#slider');
-    // trigger addHandle event
-    typeNames[$('#newRangeName').val()] = $('#newRangeName').val()
-    let name = $('#newRangeName').val();
-    let val = Number($('#newRangeValue').val());
-    handles.push({ value: val, type: name });
-
-    app.refreshOutput();
-
-    // $slider.slider('addHandle', {
-    //   value: 12,
-    //   type: 'custom' //$('#newRange').val()
-    //   // type: $('.slider-controller select').val()
-    // });
-    return false;
-  });
-
-  // button for removing currently selected handle
-  $('.slider-controller button.remove').click(function (e) {
-    e.preventDefault();
-    // get slider
-    var $slider = $('#slider');
-    // trigger removeHandle event on active handle
-    $slider.slider('removeHandle', $slider.find('a.ui-state-active').attr('data-id'));
-
-    app.refreshOutput();
-
-    return false;
-  });
-
-  // when clicking on handler
-  $(document).on('click', '.slider a', function () {
-    var select = $('.slider-controller select');
-    // enable if disabled
-    //select.attr('disabled', false);
-    alert($(this).attr('data-type'));
-
-    select.val($(this).attr('data-type'));
-    /*if ($(this).parent().find('a.ui-state-active').length)
-      $(this).toggleClass('ui-state-active');*/
-  });
-
-});
 
 function resizeTextAreas({ rowCount }) {
   rowCount = rowCount < 25 ? 25 : rowCount;
@@ -178,7 +94,7 @@ function input_changed() {
 
   let numbers = inputArray.map(x => Number(x))
   app.inputGrades = app.numbers = numbers;
-
+  app.sortedGrades = app.inputGrades.slice().sort((x,y) => x > y ? 1 : -1);
   let errors = [];
   let num = 0;
 
@@ -195,12 +111,18 @@ function input_changed() {
   }
 
   app.categoryDictGradeByNum = getCategories(numbers.slice());
-
+  calculateStats();
   app.refreshOutput();
 }
 
 function updateOutput() {
   let categoriesOrderedAsEntered = getCategoriesOrderedAsEntered();
+
+  $("#medianLabel").css({display: 'inline'});
+  $("#median").css({display: 'inline'});
+  $("#medianLetter").css({display: 'inline'});
+  $("#median").text(Number(app.median).toPrecision(3));
+  $("#medianLetter").text(app.letterOfMedian);
 
   writeToOutput(categoriesOrderedAsEntered);
   writeToOutputOrdered(categoriesOrderedAsEntered);
@@ -305,9 +227,9 @@ function checkHandlesLowBorder() {
   let lowBorder = false;
   let highBorder = false;
 
-  app.handlesWithZero = handles.slice()  // different because we do not want to show zero on slider
+  app.handlesWithZero = app.handles.slice()  // different because we do not want to show zero on slider
 
-  for (handle of handles) {
+  for (handle of app.handles) {
     if (handle.value == 0) {
       lowBorder = true;
     }
@@ -337,7 +259,7 @@ function getCategories(numbers) {
   for (let i = 0; i < app.handlesWithZero.length; i++) {
     categoryCounts.push({
       category: app.handlesWithZero[i].type,
-      count: Math.round(totalCount * ((app.handlesWithZero[i + 1]?.value || 100) - app.handlesWithZero[i].value) / 100.0)
+      count: Math.round(totalCount * (((app.handlesWithZero[i + 1] || {}).value || 100) - app.handlesWithZero[i].value) / 100.0)
     });
   }
 
@@ -403,14 +325,14 @@ function calculateCategoryFreqs(grades, desc = true) {
 }
 
 app.refreshOutput = () => {
-  app.refreshSlider(typeNames, handles) // gloabal variables in declared data.js
+  app.refreshSlider(app.typeNames, app.handles) // gloabal variables in declared data.js
   app.refreshRangesTable();
   app.refreshChart();
   updateOutput();
   // input_changed();
 }
 
-function equilizeLetters() {
+function equalizeLetters() {
 
   let ignoreRange = Number($("#ignoreRange").val());
 
@@ -567,6 +489,56 @@ function showHelp() {
   2. Or remove any unwanted one
   3. Paste all grades and see results
   4. Change any grade letter to one low or high (if you make one low by one step letter, then all grades lower than that grades up to lower letter bound will also decrease)
-  5. Equilize letters: in a range diff; make all letters equal
+  5. Equalize letters: in a range diff; make all letters equal
   `)
 }
+
+function calculateStats() {
+    app.sum = app.numbers.reduce((sum, x) => sum+= x);
+    app.median = app.sum / app.numbers.length;
+    
+    // if there is a letter of median exists
+    if(app.categoryDictGradeByNum[app.median]) {
+        app.letterOfMedian = app.categoryDictGradeByNum[app.median];
+    } else {
+        app.lowerNearestToMedian = app.sortedGrades[0];
+        app.upperNearestToMedian = app.sortedGrades[app.sortedGrades.length-1];
+        for(let i = 0; i < app.numbers.length; i++) {
+            let diff = app.numbers[i] - app.median;
+            if(diff > 0) {  // then it is upper of median
+                if(Math.abs(diff) < app.upperNearestToMedian - app.median) {
+                    app.upperNearestToMedian = app.numbers[i];
+                }
+            } else {
+                    if(Math.abs(diff) < app.median - app.lowerNearestToMedian) {
+                        app.lowerNearestToMedian = app.numbers[i];
+                    }
+            }
+        }
+
+        if(app.categoryDictGradeByNum[app.lowerNearestToMedian]) {
+            app.letterOfMedian = app.categoryDictGradeByNum[app.lowerNearestToMedian]; 
+        } else if (app.categoryDictGradeByNum[app.upperNearestToMedian] && app.letterOfMedian != app.categoryDictGradeByNum[app.upperNearestToMedian]) {
+            app.letterOfMedian = " - " + app.categoryDictGradeByNum[app.upperNearestToMedian];
+        }
+
+    }
+}
+
+app.resizeTextAreas = resizeTextAreas;
+app.input_changed = input_changed;
+app.updateOutput = updateOutput;
+app.getCategoriesOrderedAsEntered = getCategoriesOrderedAsEntered;
+app.output_changed = output_changed;
+app.output_ordered_changed = output_ordered_changed;
+app.updateCategoryDictForNewLetters = updateCategoryDictForNewLetters;
+app.checkHandlesLowBorder = checkHandlesLowBorder;
+app.getCategories = getCategories;
+app.calculateCategoryFreqs = calculateCategoryFreqs;
+app.equalizeLetters = equalizeLetters;
+app.fineTune = fineTune;
+app.writeToOutput = writeToOutput;
+app.writeToOutputOrdered = writeToOutputOrdered;
+app.showSampleGrades = showSampleGrades;
+app.showHelp = showHelp;
+app.calculateStats = calculateStats;

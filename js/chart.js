@@ -2,7 +2,9 @@
  * @author Hasan Yilmaz <github.com/yilmazhasan>
  */
 
- const colors =             [//colorSet Array
+ app = window.app;
+
+ var colors = [//colorSet Array
     "#2F4F4F",
     "#008080",
     "#2E8B57",
@@ -49,4 +51,4 @@ app.refreshChart = function () {
     });
 
     chart.render();
-}
+};

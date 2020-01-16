@@ -5,7 +5,7 @@
  * Depends:
  *	ui.core.js
  */
-
+app = window.app;
 (function($) {
 
     $.widget('ui.slider', $.ui.mouse, {
@@ -198,7 +198,7 @@
             this._refreshHandles();
             // refresh values
             this._refreshValue();
-            app.refreshOutput();
+            // app.refreshOutput();
         },
         // refresh handles
         _refreshHandles: function() {
@@ -411,7 +411,7 @@
             this._refreshHandles();
             // refresh values
             this._refreshValue();
-            app.refreshOutput();
+            // app.refreshOutput();
         },
 
         destroy: function() {
@@ -531,8 +531,8 @@
 
         // mouse stop drag handler
         _mouseStop: function(event) {
-            if(app.refreshOutput)
-                app.refreshOutput();   // global from external source, in script.js
+            // if(app.refreshOutput)
+            //     app.refreshOutput();   // global from external source, in script.js
             //this.handles.removeClass('ui-state-active');
             this._stop(event, this._handleIndex);
             this._change(event, this._handleIndex);
