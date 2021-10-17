@@ -1,5 +1,4 @@
 var app = {};
-// window.app = app;
 
 app.refreshSlider = (typeNames, handles) => {}; // gloabal variables in declared data.js
 app.refreshRangesTable = undefined;
