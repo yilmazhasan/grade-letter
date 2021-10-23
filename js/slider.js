@@ -33,7 +33,7 @@ app = window.app;
                 // main tick is 1
                 tickMain : 1,
                 // side tick is 0.5
-                tickSide : 0.5,
+                tickSide : 2,
                 // show main label
                 tickShowLabelMain : true,
                 // don't show side label
