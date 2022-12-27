@@ -1,5 +1,5 @@
 # live
-https://yilmazhasan.github.io/grader
+https://yilmazhasan.github.io/grade-letter
 
 script.js
 ---------------
