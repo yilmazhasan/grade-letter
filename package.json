@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "minify": "npx webpack --config webpack.config.js"
+    "minify": "npx webpack --config webpack.config.js",
+    "check-updates": "ncu -u"
   },
   "repository": {
     "type": "git",
@@ -26,10 +27,10 @@
   "homepage": "https://github.com/yilmazhasan/grade-letter#readme",
   "devDependencies": {
     "install": "^0.13.0",
-    "npm": "^6.13.6",
-    "terser-webpack-plugin": "^2.3.2",
-    "uglifyjs-webpack-plugin": "^1.0.0-rc.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "npm": "^11.10.0",
+    "terser-webpack-plugin": "^5.3.16",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^5.105.2",
+    "webpack-cli": "^6.0.1"
   }
 }
