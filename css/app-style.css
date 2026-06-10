@@ -1,26 +1,302 @@
+/* ─── Base ─────────────────────────────────────────────── */
+
 body {
-    padding: 5px;
+  background-color: #f5f6fa;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #333;
 }
 
-h1 {
-    margin-bottom: 30px;
+/* ─── App Wrapper ───────────────────────────────────────── */
+
+.app-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px 20px;
 }
 
-.footerElement{
-    position: absolute; 
-    margin-top: 10px;
+/* ─── Header ────────────────────────────────────────────── */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-.href {
-    text-decoration: none;
-    color: white;
+.app-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: -0.3px;
 }
+
+.app-subtitle {
+  font-weight: 300;
+  color: #7f8c8d;
+  font-size: 20px;
+}
+
+/* ─── Stats badge ───────────────────────────────────────── */
+
+.stats-badge {
+  background: #fff;
+  border: 1px solid #d5dce8;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.stats-label {
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.stats-value {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 15px;
+}
+
+.stats-sep {
+  color: #ccc;
+}
+
+/* ─── Notification bar ──────────────────────────────────── */
+
+.notification-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 0;
+  border: none;
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+/* ─── Cards ─────────────────────────────────────────────── */
+
+.card {
+  background: #fff;
+  border: 1px solid #dde3ed;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.card-heading {
+  background: #f7f9fc;
+  border-bottom: 1px solid #dde3ed;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-hint {
+  font-weight: 400;
+  color: #a0aec0;
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+.card-body {
+  padding: 14px;
+}
+
+.full-height-card {
+  height: calc(100% - 16px);
+}
+
+.table-card-body {
+  padding: 0;
+  overflow-x: auto;
+}
+
+/* ─── Slider section ────────────────────────────────────── */
+
+.section-card .card-body .slider {
+  margin-bottom: 30px;
+  margin-top: 8px;
+  width: 98%;
+  float: none;
+}
+
+/* ─── Range controls ────────────────────────────────────── */
+
+.range-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 4px;
+  clear: both;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.control-label-sm {
+  font-size: 12px;
+  color: #7f8c8d;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.control-input {
+  width: 130px !important;
+}
+
+.control-input-narrow {
+  width: 90px !important;
+}
+
+/* ─── Main content row ──────────────────────────────────── */
+
+.main-content {
+  margin-top: 0;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.main-content > [class*="col-"] {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/* ─── Textareas ─────────────────────────────────────────── */
+
+.grade-textarea {
+  width: 100%;
+  resize: vertical;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  border: 1px solid #d5dce8;
+  border-radius: 4px;
+  padding: 8px 10px;
+  background: #fafbfc;
+  color: #2d3748;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.grade-textarea:focus {
+  outline: none;
+  border-color: #4a90d9;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(74,144,217,0.15);
+}
+
+.result-textarea {
+  background: #f7f9fc;
+  color: #4a5568;
+  cursor: default;
+}
+
+.result-textarea:disabled {
+  opacity: 1;
+}
+
+.textarea-hint {
+  font-size: 11px;
+  color: #a0aec0;
+  margin-top: 5px;
+}
+
+/* ─── Sample button ─────────────────────────────────────── */
+
+.sample-btn {
+  flex-shrink: 0;
+}
+
+/* ─── Grade distribution table ──────────────────────────── */
+
+.grade-table {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+.grade-table thead th {
+  background: #f7f9fc;
+  border-bottom: 2px solid #dde3ed;
+  font-size: 11px;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 8px 10px;
+}
+
+.grade-table tbody td {
+  padding: 7px 10px;
+  border-top: 1px solid #edf2f7;
+  vertical-align: middle;
+}
+
+.grade-table tbody tr:first-child td {
+  border-top: none;
+}
+
+/* ─── Chart ─────────────────────────────────────────────── */
 
 .chartContainer {
-    height: 300px;
-    padding: 5px;
+  height: 260px;
+  width: 100%;
 }
 
+/* ─── Footer ────────────────────────────────────────────── */
+
+.app-footer {
+  margin-top: 8px;
+  padding: 14px 0;
+  border-top: 1px solid #dde3ed;
+  font-size: 12px;
+  color: #a0aec0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.footer-link {
+  color: #718096;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.footer-link:hover {
+  color: #4a5568;
+  text-decoration: underline;
+}
+
+.footer-sep {
+  color: #d5dce8;
+}
+
+/* ─── Utility ───────────────────────────────────────────── */
+
 .clickable {
-    cursor: pointer;
+  cursor: pointer;
 }

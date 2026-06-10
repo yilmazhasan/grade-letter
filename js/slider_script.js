@@ -1,91 +1,55 @@
 /**
- * @author Hasan Yilmaz <github.com/yilmazhasan> <github.com/yilmazhasan>
+ * @author Hasan Yilmaz <github.com/yilmazhasan>
  */
 
 app = window.app;
 
 $(function () {
 
-  // function to create slider ticks
-  var setSliderTicks = function () {
-    // slider element
-    var $slider = $('.slider');
-    var max = $slider.slider("option", "max");
-    var min = $slider.slider("option", "min");
-    var step = $slider.slider("option", "step");
-    var spacing = 100 / (max - min);
-    // tick element
-    var ticks = $slider.find('div.ticks');
-
-    // remove all ticks if they exist
-    $slider.find('.ui-slider-tick-mark-main').remove();
-    $slider.find('.ui-slider-tick-mark-text').remove();
-    $slider.find('.ui-slider-tick-mark-side').remove();
-
-    // generate ticks          
-    for (var i = min; i <= max; i = i + step) {
-
-      // main ticks (whole number)
-      if (i % 1 === 0) {
-        $('<span class="ui-slider-tick-mark-main"></span>').css('left', (spacing * i) + '%').appendTo(ticks);
-        $('<span class="ui-slider-tick-mark-text">' + i + '</span>').css('left', (spacing * i) + '%').appendTo(ticks);
-      }
-      // side ticks
-      else {
-        $('<span class="ui-slider-tick-mark-side"></span>').css('left', (spacing * i) + '%').appendTo(ticks);
-      }
-    }
-  };
-
   app.refreshRangesTable();
+  app.refreshSlider(app.typeNames, app.handles);
 
-  // Initialize
-  app.refreshSlider(app.typeNames, app.handles)
-
-  // button for adding new ranges                        
+  // Add a new grade range
   $('.slider-controller button.add').click(function (e) {
     e.preventDefault();
-    // get slider
-    var $slider = $('#slider');
-    // trigger addHandle event
-    app.typeNames[$('#newRangeName').val()] = $('#newRangeName').val()
-    let name = $('#newRangeName').val();
+    let name = $('#newRangeName').val().trim();
     let val = Number($('#newRangeValue').val());
-    handles.push({ value: val, type: name });
 
+    if (!name) {
+      app.notify("Please enter a letter name before adding a range.", 'warning');
+      return false;
+    }
+    if (isNaN(val) || val < 0 || val >= 100) {
+      app.notify("Start value must be a number between 0 and 99.", 'warning');
+      return false;
+    }
+
+    app.typeNames[name] = name;
+    app.handles.push({ value: val, type: name });  // fixed: was bare `handles` global
     app.refreshOutput();
-
-    // $slider.slider('addHandle', {
-    //   value: 12,
-    //   type: 'custom' //$('#newRange').val()
-    //   // type: $('.slider-controller select').val()
-    // });
     return false;
   });
 
-  // button for removing currently selected handle
+  // Remove the currently active (selected) handle
   $('.slider-controller button.remove').click(function (e) {
     e.preventDefault();
-    // get slider
-    var $slider = $('#slider');
-    // trigger removeHandle event on active handle
-    $slider.slider('removeHandle', $slider.find('a.ui-state-active').attr('data-id'));
-
+    let $slider = $('#slider');
+    let activeId = $slider.find('a.ui-state-active').attr('data-id');
+    if (activeId === undefined) {
+      app.notify("Click a handle on the slider first to select it, then remove.", 'info');
+      return false;
+    }
+    $slider.slider('removeHandle', activeId);
     app.refreshOutput();
-
     return false;
   });
 
-  // when clicking on handler
+  // Clicking a slider handle shows its type in the name input (no blocking alert)
   $(document).on('click', '.slider a', function () {
-    var select = $('.slider-controller select');
-    // enable if disabled
-    //select.attr('disabled', false);
-    alert($(this).attr('data-type'));
-
-    select.val($(this).attr('data-type'));
-    /*if ($(this).parent().find('a.ui-state-active').length)
-      $(this).toggleClass('ui-state-active');*/
+    let type = $(this).attr('data-type');
+    $('#newRangeName').val(type);
+    let select = $('.slider-controller select');
+    select.val(type);
   });
 
 });
